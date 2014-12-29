@@ -1,0 +1,851 @@
+//Simulacion de un "SAES" elaborado por "SJ/Software Jonaxel"
+//////////////////***LIBRERIAS***///////////////////
+#include <graphics.h>
+#include <string.h>
+#include <dos.h>
+#include <conio.h>
+#include <stdio.h>
+#include <iostream.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
+#include "sb.h"
+#include "graficos.h"
+#include "texto.h"
+#include "raton1.h"
+
+typedef struct{
+	char nombre[30];
+	char apellidop[30];
+	char apellidom[30];
+	int edad;
+	char calle[150];
+	char colo[30];
+	char estado[30];
+	char email[30];
+	char tel[15];
+	int a,b,c,d;
+} Alumno;
+float i,y;
+
+void Listar(void), Agregar(void), Agregar_2(void), Modificar(void);
+void Borrar(void), Encontrar(void), Eliminar(void), saes(void);
+void graficos(void), menu(void), contrasena(void), IN_calif(void);
+void RE_calif(void), graf(void);
+/////////////////////////////////////////////////////////////////////
+//                                                                   /
+//                         MAIN!!!                                    /
+//                                                                     /
+/////////////////////////////////////////////////////////////////////////
+main()
+{
+       //	inicializa();
+	int x, cont=1;
+	modgraf(19);
+	pon_pcx("SJ.pcx");
+	delay(2000);
+	gotoxy(10,20);printf("                       ");
+	while(cont<=4)
+	{
+	      for(x=10;x<30;x++)
+		{
+			gotoxy(x,20);
+			printf(" ");
+			printf("²²²");
+			delay(100);}
+			gotoxy(10,20);printf("                       ");
+			cont++;
+		}
+		cont++;
+		delay(4000);
+		pon_pcx("SoftJon.pcx");
+		sb.playwave("waves\\ESJ.wav");
+		if(!kbhit()){ for(int i=0;i<6000;i++){ sb.verifica();delay(1);}
+	}
+	fflush(stdin);
+	saes();
+}
+//////////////////////////*FUNCIONES*////////////////////////////////
+void saes ()
+{
+   graficos();
+   for(i=7;i<=25;i++)
+   {
+      setcolor(i);
+      rectangle(1,1,getmaxx(),getmaxy());
+      rectangle(5,5,getmaxx()-5,getmaxy()-5);
+      rectangle(160,70,500,180);
+      settextstyle(4,0,7);
+      gprintfxy(180,80,"Bienvenido");
+      delay(200);
+   }
+   settextstyle(2,0,6);
+   setcolor(3);
+   setfillstyle(20,1);
+   settextstyle(4,0,7);
+   gprintfxy(10,300,"Cargando");
+   for(i=10;i<630;i+=6.25)
+   {
+      y=y+1;
+      bar(10,420,i,440);
+      delay(100);
+      gprintfxy(300,300,"%.0f%",y);
+   }
+   delay(2000);
+
+   cleardevice();
+   menu();
+   closegraph();
+}
+
+
+void graficos(void)
+{
+
+	  int gdriver = DETECT, gmode, errorcode,x,y;
+
+	  initgraph(&gdriver, &gmode, "BGI");
+		errorcode = graphresult();
+		if (errorcode != grOk)
+		{
+		 printf("Error Grafico: %s\n", grapherrormsg(errorcode));
+		 printf("Presione cualquier tecla para abortar...");
+		 getch();
+		 exit(1);
+		}
+}
+
+void menu(void)
+{
+	graficos();
+	if (!mtest())
+	   gprintf("no hay raton instalado");
+	mver ();
+	msituar(8,40,25);
+	cleardevice();
+	fflush(stdin);
+	setcolor(3);
+	rectangle(1,1,getmaxx(),getmaxy());
+	rectangle(5,5,getmaxx()-5,getmaxy()-5);
+	setcolor(10);
+	settextstyle(2,0,5);
+	setfillstyle(1,8);
+	bar3d(60,40,170,70,10,10);
+	gprintfxy(80,48,"Registrar");
+	bar3d(60,120,170,150,10,10);
+	gprintfxy(75,128,"Acerca de...");
+	bar3d(190,120,300,150,10,10);
+	gprintfxy(205,128,"Dar de baja");
+	bar3d(320,120,430,150,10,10);
+	gprintfxy(335,128,"Modificar");
+	bar3d(190,40,300,70,10,10);
+	gprintfxy(220,48,"Mostrar");
+	bar3d(320,40,430,70,10,10);
+	gprintfxy(350,48,"Buscar");
+	bar3d(450,40,560,70,10,10);
+	gprintfxy(480,48,"Salir");
+
+	for(;;)
+	{
+		fflush(stdin);
+		if(kbhit())if(getch()==27)break;
+		switch (mclick()){
+		case 1:
+			if (inbox(7,3,21,8,mposx(8),mposy(8)))
+			{
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(60,40,170,70,10,10);
+				gprintfxy(80,48,"Registrar");
+				mocultar();
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(70,30,180,60,10,10);
+				gprintfxy(90,38,"Registrar");
+				delay(600);
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(70,30,180,60,10,10);
+				gprintfxy(90,38,"Registrar");
+				setcolor(10);
+				setfillstyle(1,9);
+				bar3d(60,40,170,70,10,10);
+				gprintfxy(80,48,"Registrar");
+				contrasena();
+			}
+
+			if (inbox(41,3,51,8,mposx(8),mposy(8))){
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(320,40,430,70,10,10);
+				gprintfxy(350,48,"Buscar");
+				mocultar();
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(330,30,440,60,10,10);
+				gprintfxy(360,38,"Buscar");
+				delay(600);
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(330,30,440,60,10,10);
+				gprintfxy(360,38,"Buscar");
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(320,40,430,70,10,10);
+				gprintfxy(350,48,"Buscar");
+				Encontrar();
+			}
+
+			if (inbox(22,3,36,8,mposx(8),mposy(8)))
+			{
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(190,40,300,70,10,10);
+				gprintfxy(220,48,"Mostrar");
+				mocultar();
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(200,30,310,60,10,10);
+				gprintfxy(230,38,"Mostrar");
+				delay(600);
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(200,30,310,60,10,10);
+				gprintfxy(230,38,"Mostrar");
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(190,40,300,70,10,10);
+				gprintfxy(220,48,"Mostrar");
+				Listar();
+			}
+
+			if (inbox(7,13,21,18,mposx(8),mposy(8))){
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(60,120,170,150,10,10);
+				gprintfxy(75,128,"Acerca de...");
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(70,110,180,140,10,10);
+				gprintfxy(85,118,"Acerca de...");
+				delay(600);
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(70,110,180,140,10,10);
+				gprintfxy(85,118,"Acerca de...");
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(60,120,170,150,10,10);
+				gprintfxy(75,128,"Acerca de...");
+
+				gprintfxy(30,320,"Este programa fue dise¤ado en lenguaje C, compilador TURBO C++ 3.0.\n");
+				gprintfxy(30,335,"Tiene como proposito simular un SAES de datos, por medio de");
+				gprintfxy(30,350,"apertura de archivos binarios. En donde se facilita al usuario el");
+				gprintfxy(30,365,"registro de ALUMNOS a una peque¤a base de datos, asi contando con un buscador,");
+				gprintfxy(30,380,"eliminar, modificar y agrega.");
+				gprintfxy(30,395,"EL PROGRAMA FUE HECHO POR SOFTWARE JONAXEL cualquier parecido con la realidad");
+				gprintfxy(30,410,"ES PURA COINCIDENCIA");
+				gprintfxy(30,425,"Presione una tecla para continuar...");
+				getch();
+				gprintfxy(30,320,"                                                                     ");
+				gprintfxy(30,335,"                                                                              ");
+				gprintfxy(30,350,"                                                                           ");
+				gprintfxy(30,365,"                                                                               ");
+				gprintfxy(30,380,"                             ");
+				gprintfxy(30,395,"                                                                               ");
+				gprintfxy(30,410,"                     ");
+				gprintfxy(30,425,"                                    ");
+			}
+
+			if (inbox(22,13,36,18,mposx(8),mposy(8))){
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(190,120,300,150,10,10);
+				gprintfxy(205,128,"Dar de baja");
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(200,110,310,140,10,10);
+				gprintfxy(215,118,"Dar de baja");
+				delay(600);
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(200,110,310,140,10,10);
+				gprintfxy(215,118,"Dar de baja");
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(190,120,300,150,10,10);
+				gprintfxy(205,128,"Dar de baja");
+				Borrar();
+			}
+
+			if (inbox(41,13,51,18,mposx(8),mposy(8))){
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(320,120,430,150,10,10);
+				gprintfxy(335,128,"Modificar");
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(330,110,440,140,10,10);
+				gprintfxy(345,118,"Modificar");
+				delay(600);
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(330,110,440,140,10,10);
+				gprintfxy(345,118,"Modificar");
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(320,120,430,150,10,10);
+				gprintfxy(335,128,"Modificar");
+				Modificar();
+			}
+
+			if (inbox(60,3,66,8,mposx(8),mposy(8)))
+			{
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(450,40,560,70,10,10);
+				gprintfxy(480,48,"Salir");
+				mocultar();
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(460,30,570,60,10,10);
+				gprintfxy(490,38,"Salir");
+				delay(900);
+				setcolor(0);
+				setfillstyle(1,0);
+				bar3d(460,30,570,60,10,10);
+				gprintfxy(470,38,"Salir");
+				setcolor(10);
+				setfillstyle(1,8);
+				bar3d(450,40,560,70,10,10);
+				gprintfxy(480,48,"Salir");
+				mocultar ();
+				modgraf(19);
+				pon_pcx("SoftJon.pcx");
+				delay(1000);
+				sb.playwave("waves\\SSJ.wav");
+				if(!kbhit()){ for(int i=0;i<6000;i++){ sb.verifica();delay(1);}}
+				cleardevice();
+				closegraph();
+				exit(0);
+			}break;
+			}
+
+		setcolor(4);
+
+		if (inbox(9,3,21,8,mposx(8),mposy(8)))
+		{
+			setcolor(9);
+			gprintfxy(60,10,"Introduce datos del alumno (Personal Autorizado)");
+			delay(100);
+			gprintfxy(60,10,"                                                ");
+		}
+
+		if (inbox(41,3,51,8,mposx(8),mposy(8)))
+		{
+			setcolor(9);
+			gprintfxy(320,10,"Busca los datos del alumno ");
+			delay(100);
+			gprintfxy(320,10,"                           ");
+		}
+
+		if (inbox(60,3,66,8,mposx(8),mposy(8)))
+		{
+			setcolor(9);
+			gprintfxy(450,10,"Click para salir");
+			delay(100);
+			gprintfxy(410,10,"                         ");
+		}
+
+		if (inbox(25,3,36,8,mposx(8),mposy(8)))
+		{
+			setcolor(9);
+			gprintfxy(100,10,"Muestra los alumnos registrados");
+			delay(100);
+			gprintfxy(100,10,"                                             ");
+		}
+
+		if (inbox(8,14,21,18,mposx(8),mposy(8)))
+		{
+			setcolor(9);
+			gprintfxy(75,88,"Acerca de mi programa");
+			delay(100);
+			gprintfxy(75,88,"                         ");
+		}
+
+		if (inbox(24,14,36,18,mposx(8),mposy(8)))
+		{
+			setcolor(9);
+			gprintfxy(205,88,"Borra a un alumno");
+			delay(100);
+			gprintfxy(205,88,"                         ");
+		}
+
+		if (inbox(41,14,51,18,mposx(8),mposy(8)))
+		{
+			setcolor(9);
+			gprintfxy(335,88,"Modifica el registro");
+			delay(100);
+			gprintfxy(335,88,"                         ");
+		}
+
+		if (inbox(60,3,66,8,mposx(8),mposy(8)))
+		{
+			setcolor(9);
+			gprintfxy(450,10,"Click para salir");
+			delay(100);
+			gprintfxy(410,10,"                         ");
+		}
+	}
+}
+
+void contrasena(void)
+{
+	char contra[7];
+	int x, i;
+	mocultar();
+	cleardevice();
+	setcolor(25);
+	rectangle(1,1,getmaxx(),getmaxy());
+	rectangle(5,5,getmaxx()-5,getmaxy()-5);
+	setcolor(10);
+	setfillstyle(1,1);
+	settextstyle(2,0,5);
+	gprintfxy(100,50,"Contrase¤a:");
+	for(i=0,x=250; ; i++,x+=7)
+	{
+		contra[i]=getch();
+		gprintfxy(x,50,"*");
+		if(contra[i]==13)
+		   break;
+		if(i>=8)
+		   break;
+	}
+	contra[i]='\0';
+	if (strcmp(contra,"maestro"))
+	{
+		gprintfxy(100,70,"Contrase¤a no valida");
+		sb.playwave("waves\\baby.wav");
+		if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+		gprintfxy(100,90,"Presiona una tecla para continuar");
+		getch();
+		menu();
+	}
+	else
+		Agregar();
+}
+
+void Agregar(void)
+{
+   FILE *fp;
+   Alumno aux;
+   char cad[3];
+   int a=0,b=0,c=0,d=0;
+   mocultar();
+   cleardevice();
+   setcolor(25);
+   rectangle(1,1,getmaxx(),getmaxy());
+   rectangle(5,5,getmaxx()-5,getmaxy()-5);
+   setcolor(10);
+   gprintfxy(10,10,"\n Registrar nuevo alumno...\n");
+   if((fp=fopen("CALIF","ab"))==NULL)
+   {
+      printf("No se puede abrir el archivo");
+      sb.playwave("waves\\baby.wav");
+      if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+   }
+		gprintfxy(10,30,"Nombre(s) del alumno: ");
+		gotoxy(25,3);gets(aux.nombre);
+		gprintfxy(10,46,"Apellido paterno:");
+		gotoxy(25,4);gets(aux.apellidop);
+		gprintfxy(10,62,"Apellido materno:");
+		gotoxy(25,5);gets(aux.apellidom);
+		gprintfxy(10,78,"Direccion:");
+		gotoxy(25,6);gets(aux.calle);
+		gprintfxy(10,94,"Colonia:");
+		gotoxy(25,7);gets(aux.colo);
+		gprintfxy(10,110,"Estado o Municipio:");
+		gotoxy(25,8);gets(aux.estado);
+		gprintfxy(10,126,"Correo electronico:");
+		gotoxy(25,9);gets(aux.email);
+		gprintfxy(10,142,"Edad: ");
+		gotoxy(25,10);aux.edad=atoi(gets(cad));
+		//gscanf("%d",&aux.edad);
+		gprintfxy(10,158,"Numero telefonico: ");
+		gotoxy(25,11);gets(aux.tel);
+		fflush(stdin);
+		gprintfxy(10,174,"Espere...");
+		delay(2000);
+		//IN_calif();
+		gprintfxy(10,190,"Inserte la calificacion del 1 parcial:");
+		gotoxy(40,13);aux.a=atoi(gets(cad));
+		gprintfxy(10,206,"Inserte la calificacion del 2 parcial:");
+		gotoxy(40,14);aux.b=atoi(gets(cad));
+		gprintfxy(10,222,"Inserte la calificacion del 3 parcial:");
+		gotoxy(40,15);aux.c=atoi(gets(cad));
+		a=aux.a; b=aux.b; c=aux.c;
+		d=(a+b+c)/3;
+		aux.d=d;
+
+		if(fwrite(&aux, sizeof(aux), 1, fp)!=1)
+		   printf("Error de archivo");
+		fclose(fp);
+		cleardevice();
+		gprintfxy(10,190,"Registrando alumno. Espere...");
+		delay(4000);
+		gprintfxy(50,210,"\nOperacion Exitosa. Alumno registrado!!!");
+		sb.playwave("waves\\aplausos.wav");
+		if(!kbhit()){ for(i=0;i<3000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+		//graf();
+   menu();
+}
+
+void Agregar_2(void)
+{
+   FILE *fp;
+   Alumno aux;
+   int a=0,b=0,c=0,d=0;
+   char cad[3];
+   mocultar();
+   cleardevice();
+   setcolor(25);
+   rectangle(1,1,getmaxx(),getmaxy());
+   rectangle(5,5,getmaxx()-5,getmaxy()-5);
+   setcolor(10);
+   gprintfxy(10,10,"\n CAMBIANDO VALORES...\n");
+   if((fp=fopen("CALIF","ab"))==NULL)
+   {
+      printf("No se puede abrir el archivo");
+      sb.playwave("waves\\baby.wav");
+      if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+   }
+		gprintfxy(10,30,"Nombre(s) del alumno: ");
+		gotoxy(25,3);gets(aux.nombre);
+		gprintfxy(10,46,"Apellido paterno:");
+		gotoxy(25,4);gets(aux.apellidop);
+		gprintfxy(10,62,"Apellido materno:");
+		gotoxy(25,5);gets(aux.apellidom);
+		gprintfxy(10,78,"Direccion:");
+		gotoxy(25,6);gets(aux.calle);
+		gprintfxy(10,94,"Colonia:");
+		gotoxy(25,7);gets(aux.colo);
+		gprintfxy(10,110,"Estado o Municipio:");
+		gotoxy(25,8);gets(aux.estado);
+		gprintfxy(10,126,"Correo electronico:");
+		gotoxy(25,9);gets(aux.email);
+		gprintfxy(10,142,"Edad: ");
+		gotoxy(25,10);aux.edad=atoi(gets(cad));
+		gprintfxy(10,158,"Numero telefonico: ");
+		gotoxy(25,11);gets(aux.tel);
+		delay(1000);
+		fflush(stdin);
+		gprintfxy(10,190,"Inserte la calificacion del 1 parcial:");
+		gotoxy(40,13);aux.a=atoi(gets(cad));
+		gprintfxy(10,206,"Inserte la calificacion del 2 parcial:");
+		gotoxy(40,14);aux.b=atoi(gets(cad));
+		gprintfxy(10,222,"Inserte la calificacion del 3 parcial:");
+		gotoxy(40,15);aux.c=atoi(gets(cad));
+		a=aux.a; b=aux.b; c=aux.c;
+		d=(a+b+c)/3;
+		aux.d=d;
+
+		if(fwrite(&aux, sizeof(aux), 1, fp)!=1)
+		   printf("Error de archivo");
+		fclose(fp);
+		cleardevice();
+		gprintfxy(10,190,"Modificando alumno. Espere...");
+		delay(4000);
+		gprintfxy(50,210,"\nOperacion Exitosa. Alumno modificado!!!");
+		sb.playwave("waves\\aplausos.wav");
+		if(!kbhit()){ for(i=0;i<3000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+   menu();
+}
+
+void Listar(void){
+   FILE *fp;
+   Alumno aux;
+   int y=50, i=0;
+   mver();
+   msituar(8,40,25);
+   cleardevice();
+   setcolor(15);
+   if((fp=fopen("calif","rb"))==NULL){
+	gprintf("\n Error de apuertura del archivo\n");
+	sb.playwave("waves\\baby.wav");
+	if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}}
+   else{
+	gprintfxy(10,10,"\n A L U M N O S  R E G I S T R A D O S\n");
+	gprintfxy(10,30,"---------------------------------------------------------------\n");
+	while ((fread(&aux, sizeof(aux), 1, fp))!=0){
+		setcolor(15);
+		gprintfxy(10,y,"=> Datos del Alumno");
+		y=y+20;
+		setcolor(10);
+		gprintfxy(10,y,"Nombre:%s %s %s\n",aux.apellidop,aux.apellidom,aux.nombre);
+		y=y+20;
+		gprintfxy(10,y,"Direccion: %s %s %s\n",aux.calle,aux.colo,aux.estado);
+		y=y+20;
+		gprintfxy(10,y,"Telefono: %s\n",aux.tel);
+		y=y+20;
+		gprintfxy(10,y,"Correo electronico: %s\n",aux.email);
+		y=y+20;
+		gprintfxy(10,y,"Edad: %d",aux.edad);
+		//RE_calif();
+		y=y+20;
+		gprintfxy(10,y,"1 Parcial: %d    2 Parcial: %d    3 Parcial: %d",aux.a, aux.b, aux.c);
+		y=y+20;
+		gprintfxy(10,y,"Promedio: %d",aux.d);
+		y=y+20;
+		i++;
+      }
+      setcolor(15);
+      gprintfxy(10,y,"---------------------------------------------------------------\n");
+      fclose(fp);
+      getch();
+      }
+   menu();
+}
+void Encontrar(void)
+{
+	FILE *fp;
+	Alumno aux;
+	int n=1, i;
+	char cadena[25];
+	mver();
+	msituar(8,40,25);
+	cleardevice();
+	setcolor(10);
+	rectangle(1,1,getmaxx(),getmaxy());
+	rectangle(5,5,getmaxx()-5,getmaxy()-5);
+	setcolor(14);
+	gprintfxy(10,30,"Introduce el nombre del Alumno a buscar: ");
+	gotoxy(45,3); gets(cadena);
+	gprintfxy(10,50,"Buscando Alumno...\n");
+	while(n<=8){
+		for(i=200; i<280; i++)
+		{
+			setcolor(i);
+			gprintfxy(i,50,"±");
+			delay(10);
+			gprintfxy(i,50,"  ");
+		}
+		n++;
+	}
+	if((fp=fopen("calif","rb"))==NULL)
+	{
+		gprintfxy(10,70,"\n No se puede abrir el archivo :(\n");
+		fflush(stdin);
+		sb.playwave("waves\\baby.wav");
+		if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+	}
+	else
+	{
+		while ((n=fread(&aux, sizeof(aux), 1, fp))!=0 && stricmp(aux.nombre,cadena)!=0);
+		if (n==0)
+		{
+			setcolor(14);
+			gprintfxy(10,70,"No existe el Alumno llamado: %s ",cadena);
+			fflush(stdin);
+			sb.playwave("waves\\baby.wav");
+			if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+		}
+      else{
+		setcolor(14);
+		gprintfxy(10,70,"\n Alumno encontrado....!!!\n");
+		gprintfxy(10,90,"----------------------------------------------------");
+		gprintfxy(10,110,"Nombre: %s %s %s\n",aux.apellidop,aux.apellidom,aux.nombre);
+		gprintfxy(10,130,"Direccion: %s\n",aux.colo);
+		gprintfxy(10,150,"Telefono: %s\n",aux.tel);
+		gprintfxy(10,170,"Correo electronico: %s\n",aux.email);
+		gprintfxy(10,190,"1 Parcial: %d   2 Parcial:%d   3 Parcial:%d",aux.a,aux.b,aux.c);
+		gprintfxy(10,210,"Promedio: %d",aux.d);
+		fflush(stdin);
+		sb.playwave("waves\\aplausos.wav");
+		if(!kbhit()){ for(i=0;i<3000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+		getch();
+	  }
+	}
+      menu();
+}
+
+void Borrar(void)
+{
+	FILE *fp,*fd;
+	Alumno	aux;
+	int encontrado=0, n=0;
+	char cadena[25];
+	mver();
+	msituar(8,40,25);
+	cleardevice();
+	setcolor(4);
+	rectangle(1,1,getmaxx(),getmaxy());
+	rectangle(5,5,getmaxx()-5,getmaxy()-5);
+	setcolor(50);
+	gprintfxy(10,30,"Introduce el nombre del Alumno: ");
+	gotoxy(45,3); gets(cadena);
+	gprintfxy(10,50,"Buscando Alumno...\n");
+	while(n<=8){
+		for(int i=200; i<280; i++)
+		{
+			setcolor(i);
+			gprintfxy(i,50,"±");
+			delay(10);
+			gprintfxy(i,50,"  ");
+		}
+		n++;
+	}
+	if((fp=fopen("calif","rb"))==NULL){
+		gprintfxy(10,70,"\n No se puede abrir el archivo\n");
+		sb.playwave("waves\\baby.wav");
+		if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}}
+	else{
+		if((fd=fopen("SYSTEM.$$$","wb"))==NULL){
+			gprintfxy(10,70,"\n No se puede abrir el archivo\n");
+			sb.playwave("waves\\baby.wav");
+			if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}}
+		else{
+			while ((fread(&aux, sizeof(aux), 1, fp))!=0)
+				if(strcmp(aux.nombre,cadena)!=0)
+					fwrite(&aux, sizeof(aux), 1, fd);
+				else
+					encontrado=1;
+		fclose(fd);
+	}
+      fclose(fp);
+      if(encontrado){
+	 system("del calif");
+	 system("ren SYSTEM.$$$ calif");
+	 setcolor(50);
+	 gprintfxy(10,70,"\n Alumno dado de baja con EXITO\n");
+	 sb.playwave("waves\\toilet.wav");
+	 if(!kbhit()){ for(i=0;i<3000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+      }
+      else{
+	 system("del SYSTEM.$$$");
+	 setcolor(50);
+	 gprintfxy(10,70,"\n No se encontro el Alumno");
+	 sb.playwave("waves\\baby.wav");
+	 if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+      }
+   }
+   menu();
+}
+
+void Modificar(void)
+{
+	FILE *fp,*fd;
+	Alumno	aux;
+	int encontrado=0, n=0;
+	char cadena[25];
+	mver();
+	msituar(8,40,25);
+	cleardevice();
+	setcolor(4);
+	rectangle(1,1,getmaxx(),getmaxy());
+	rectangle(5,5,getmaxx()-5,getmaxy()-5);
+	setcolor(50);
+	/*gprintfxy(10,30,"Introduce el nombre del Alumno: ");
+	gotoxy(45,3); gets(cadena);
+	gprintfxy(10,50,"Buscando Alumno...\n");
+	while(n<=8){
+		for(int i=200; i<280; i++)
+		{
+			setcolor(i);
+			gprintfxy(i,50,"±");
+			delay(10);
+			gprintfxy(i,50,"  ");
+		}
+		n++;
+	}
+	if((fp=fopen("calif","rb"))==NULL){
+		gprintfxy(10,70,"\n No se puede abrir el archivo\n");
+		sb.playwave("waves\\baby.wav");
+		if(!kbhit()){ for(i=0;i<6000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}}
+	else{
+		setcolor(14);
+		gprintfxy(10,70,"\n Alumno encontrado....!!!\n");
+		gprintfxy(10,90,"----------------------------------------------------");
+		gprintfxy(10,110,"Nombre: %s %s %s\n",aux.apellidop,aux.apellidom,aux.nombre);
+		gprintfxy(10,130,"Direccion: %s\n",aux.colo);
+		fflush(stdin);
+		sb.playwave("waves\\aplausos.wav");
+		if(!kbhit()){ for(i=0;i<6000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+		getch();*/
+	gprintfxy(10,30,"Introduce el nombre del Alumno a buscar: ");
+	gotoxy(45,3); gets(cadena);
+	gprintfxy(10,50,"Buscando Alumno...\n");
+	while(n<=8){
+		for(i=200; i<280; i++)
+		{
+			setcolor(i);
+			gprintfxy(i,50,"±");
+			delay(10);
+			gprintfxy(i,50,"  ");
+		}
+		n++;
+	}
+	if((fp=fopen("calif","rb"))==NULL)
+	{
+		gprintfxy(10,70,"\n No se puede abrir el archivo :(\n");
+		sb.playwave("waves\\baby.wav");
+		if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+	}
+	else
+	{
+		while ((n=fread(&aux, sizeof(aux), 1, fp))!=0 && stricmp(aux.nombre,cadena)!=0);
+		if (n==0)
+		{
+			setcolor(14);
+			gprintfxy(10,70,"No existe el Alumno llamado: %s ",cadena);
+			sb.playwave("waves\\baby.wav");
+			if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+		}
+      else{
+		setcolor(14);
+		gprintfxy(10,70,"\n Alumno encontrado....!!!\n");
+		gprintfxy(10,90,"----------------------------------------------------");
+		gprintfxy(10,110,"Nombre: %s %s %s\n",aux.apellidop,aux.apellidom,aux.nombre);
+		gprintfxy(10,130,"Direccion: %s\n",aux.colo);
+		gprintfxy(10,150,"Telefono: %s\n",aux.tel);
+		gprintfxy(10,170,"Correo electronico: %s\n",aux.email);
+		sb.playwave("waves\\aplausos.wav");
+		if(!kbhit()){ for(i=0;i<3000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+	  }
+	  fclose(fp);
+	    if((fp=fopen("calif","rb"))==NULL){
+		gprintfxy(10,70,"\n No se puede abrir el archivo\n");
+		sb.playwave("waves\\baby.wav");
+		if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}}
+	else{
+		if((fd=fopen("SYSTEM.$$$","wb"))==NULL){
+			gprintfxy(10,70,"\n No se puede abrir el archivo\n");
+			sb.playwave("waves\\baby.wav");
+			if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}}
+		else{
+			while ((fread(&aux, sizeof(aux), 1, fp))!=0)
+				if(stricmp(aux.nombre,cadena)!=0)
+					fwrite(&aux, sizeof(aux), 1, fd);
+				else
+					encontrado=1;
+		fclose(fd);
+	}
+      fclose(fp);
+      if(encontrado){
+	 system("del calif");
+	 system("ren SYSTEM.$$$ calif");
+	 Agregar_2();
+	 //setcolor(50);
+	 //gprintfxy(10,70,"\n Alumno dado de baja con EXITO\n");
+	 //sb.playwave("waves\\toilet.wav");
+	 //if(!kbhit()){ for(i=0;i<6000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+      }
+      else{
+	 system("del SYSTEM.$$$");
+	 setcolor(50);
+	 gprintfxy(10,70,"\n No se encontro el Alumno");
+	 sb.playwave("waves\\baby.wav");
+	 if(!kbhit()){ for(i=0;i<2000;i++){if(kbhit()) if(getch()==27) break; sb.verifica();delay(1);}}
+      }
+    }
+   }menu();
+}
